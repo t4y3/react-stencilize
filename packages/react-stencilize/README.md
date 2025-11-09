@@ -18,14 +18,16 @@ npm i react-stencilize
 
 Peer deps: `react` and `react-dom` (>=18 or ^19).
 
-## Quick Start
+## Quick Start (React 19 `use`)
 
 ```tsx
-import React, { Suspense } from 'react';
+import { Suspense, use } from 'react';
 import { withStencil } from 'react-stencilize';
 
-// Your real component
-function UserCard(props: { user: { name: string; bio?: string } }) {
+type User = { name: string; bio?: string };
+
+// Presentational component (no hooks) — safe to stencil
+function UserCardView(props: { user: User }) {
   return (
     <section className="card">
       <h2>{props.user.name}</h2>
@@ -34,13 +36,20 @@ function UserCard(props: { user: { name: string; bio?: string } }) {
   );
 }
 
-// Generate a skeleton from the real component
-const UserCardSkeleton = withStencil(UserCard);
+// Data component resolves the Promise via React.use()
+function UserCard(props: { user: Promise<User> }) {
+  const user = use(props.user);
+  return <UserCardView user={user} />;
+}
+
+// Generate a skeleton from the presentational component (no use() inside)
+const UserCardSkeleton = withStencil(UserCardView);
 
 export function View() {
+  const userPromise: Promise<User> = fetch('/api/user').then((r) => r.json());
   return (
     <Suspense fallback={<UserCardSkeleton />}> 
-      <UserCard /* ...real props when ready... */ />
+      <UserCard user={userPromise} />
     </Suspense>
   );
 }
@@ -99,17 +108,39 @@ function withStencil<P extends object>(Component: React.ComponentType<P>): React
 - Components that render hardcoded strings/icons will show them in the skeleton. Prefer conditional rendering bound to real data or hide such content with CSS in loading states.
 - When hooks are used, the library renders through React with safe props instead of direct invocation; most content will still collapse via placeholder props, but sanitization cannot intercept the final VDOM after React renders.
 
-## Example: Next.js/React 18 Suspense
+## Example: React 19 Suspense + `use`
 
 ```tsx
-const Article = React.lazy(() => import('./Article'));
-const ArticleSkeleton = withStencil(Article);
+import { Suspense, use } from 'react';
+import { withStencil } from 'react-stencilize';
+
+type Article = { title: string; body: string };
+
+// Presentational (no hooks)
+function ArticleView({ article }: { article: Article }) {
+  return (
+    <article>
+      <h1>{article.title}</h1>
+      <p>{article.body}</p>
+    </article>
+  );
+}
+
+// Data wrapper (uses React.use())
+function Article({ data }: { data: Promise<Article> }) {
+  const article = use(data);
+  return <ArticleView article={article} />;
+}
+
+// Stencil from presentational only
+const ArticleSkeleton = withStencil(ArticleViewInner);
 
 export default function Page() {
+  const data: Promise<Article> = fetch('/api/article').then((r) => r.json());
   return (
-    <React.Suspense fallback={<ArticleSkeleton />}> 
-      <Article />
-    </React.Suspense>
+    <Suspense fallback={<ArticleSkeleton />}> 
+      <Article data={data} />
+    </Suspense>
   );
 }
 ```
