@@ -15,9 +15,6 @@
   },
   "files": ["dist"],
   "sideEffects": false,
-  "engines": {
-    "node": ">=18"
-  },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build": "tsc -p tsconfig.build.json",
@@ -33,13 +30,13 @@
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/t4y3/react-skeletonize.git",
+    "url": "git+https://github.com/t4y3/react-stencilize.git",
     "directory": "packages/react-stencilize"
   },
   "bugs": {
-    "url": "https://github.com/t4y3/react-skeletonize/issues"
+    "url": "https://github.com/t4y3/react-stencilize/issues"
   },
-  "homepage": "https://github.com/t4y3/react-skeletonize#readme",
+  "homepage": "https://github.com/t4y3/react-stencilize#readme",
   "peerDependencies": {
     "react": ">=18 || ^19",
     "react-dom": ">=18 || ^19"
