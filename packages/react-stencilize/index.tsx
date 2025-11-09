@@ -109,7 +109,7 @@ function resolveCallableComponent<P extends object>(C: unknown): ((props: P) => 
 }
 
 /**
- * Usage:
+ * @example
  * const Skeleton = withStencil(User)
  * <Suspense fallback={<Skeleton />}>
  *   <User user={data.user} />
