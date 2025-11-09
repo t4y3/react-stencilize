@@ -1,6 +1,6 @@
 {
   "name": "react-stencilize",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A React HOC to render safe, outline-only skeletons without branching.",
   "license": "MIT",
   "type": "module",
@@ -13,7 +13,9 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -26,7 +28,14 @@
     "biome:staged": "biome check --write --no-errors-on-unmatched",
     "format": "biome format --write ."
   },
-  "keywords": ["react", "skeleton", "placeholder", "loading", "suspense", "hoc"],
+  "keywords": [
+    "react",
+    "skeleton",
+    "placeholder",
+    "loading",
+    "suspense",
+    "hoc"
+  ],
   "author": "",
   "repository": {
     "type": "git",
