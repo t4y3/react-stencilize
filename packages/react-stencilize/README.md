@@ -72,7 +72,6 @@ function withStencil<P extends object>(Component: React.ComponentType<P>): React
 ```
 
 - Returns a React component you can use as a skeleton placeholder.
-- The returned component has a helpful `displayName` like `Skeleton(ComponentName)`.
 - No props are required; it internally supplies safe placeholder props.
 
 ## Behavior Details
@@ -84,7 +83,10 @@ function withStencil<P extends object>(Component: React.ComponentType<P>): React
 
 ## Styling Skeletons
 
+- This library ships no CSS and does not style anything for you. It only generates a sanitized skeleton structure; bring your own styles.
+- Using Tailwind CSS? We recommend pairing with tailwindcss-skeleton-screen: https://github.com/t4y3/tailwindcss-skeleton-screen/
 - Add CSS classes in your real components (e.g., `.card`, `.title`, `.avatar`) and target them with skeleton styles when used inside the stencil. Because structure is preserved, your layout skeleton stays aligned.
+- Use the `:empty` pseudo‑class to style elements that render no content in the stencil (strings are sanitized to empty). Example: `.title:empty { @apply bg-muted h-5 rounded; }`.
 - Common patterns include using background shimmer, neutral blocks, or aspect‑ratio placeholders for media.
 
 ## TypeScript
@@ -111,4 +113,3 @@ export default function Page() {
   );
 }
 ```
-
