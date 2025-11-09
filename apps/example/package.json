@@ -1,30 +1,31 @@
 {
-  "name": "@react-skeletonize/example",
+  "name": "@react-stencilize/example",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "check": "npm run typecheck && npm run biome:check",
+    "typecheck": "tsc -b --pretty false",
+    "biome:check": "biome check .",
+    "biome:fix": "biome check --write .",
+    "biome:staged": "biome check --write --no-errors-on-unmatched",
+    "format": "biome format --write .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.13",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "@tailwindcss/vite": "4.1.17",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-stencilize": "*",
+    "tailwindcss-skeleton-screen": "2.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.0.0",
-    "eslint": "^9.33.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2"
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "5.0.0",
+    "typescript": "5.9.3",
+    "vite": "7.2.2"
   }
 }

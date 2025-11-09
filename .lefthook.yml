@@ -1,0 +1,24 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome-example:
+      description: "Biome check on staged files (apps/example)"
+      glob: "apps/example/**/*.{js,jsx,ts,tsx,json,jsonc,md}"
+      run: npm run -w @react-stencilize/example biome:staged -- {staged_files_abs}
+    biome-stencilize:
+      description: "Biome check on staged files (packages/react-stencilize)"
+      glob: "packages/react-stencilize/**/*.{js,jsx,ts,tsx,json,jsonc,md}"
+      run: npm run -w react-stencilize biome:staged -- {staged_files_abs}
+
+pre-push:
+  parallel: true
+  commands:
+    typecheck-example:
+      description: "Type check apps/example"
+      run: npm run -w @react-stencilize/example typecheck
+    typecheck-stencilize:
+      description: "Type check packages/react-stencilize"
+      run: npm run -w react-stencilize typecheck
+    tests-all:
+      description: "Run tests in all workspaces if present"
+      run: npm -ws --if-present run test

@@ -1,0 +1,52 @@
+{
+  "name": "react-stencilize",
+  "version": "1.0.0",
+  "description": "A React HOC to render safe, outline-only skeletons without branching.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "check": "npm run typecheck && npm run biome:check",
+    "prepack": "npm run build",
+    "biome:check": "biome check .",
+    "biome:fix": "biome check --write .",
+    "biome:staged": "biome check --write --no-errors-on-unmatched",
+    "format": "biome format --write ."
+  },
+  "keywords": ["react", "skeleton", "placeholder", "loading", "suspense", "hoc"],
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/t4y3/react-skeletonize.git",
+    "directory": "packages/react-stencilize"
+  },
+  "bugs": {
+    "url": "https://github.com/t4y3/react-skeletonize/issues"
+  },
+  "homepage": "https://github.com/t4y3/react-skeletonize#readme",
+  "peerDependencies": {
+    "react": ">=18 || ^19",
+    "react-dom": ">=18 || ^19"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "typescript": "5.9.3"
+  }
+}

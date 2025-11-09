@@ -1,13 +1,22 @@
 {
-  "name": "react-skeletonize",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "@react-stencilize/root",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A React library for creating skeleton screens easily.",
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "workspaces": ["apps/*", "packages/*"]
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "lefthook": "1.13.6"
+  },
+  "volta": {
+    "node": "24.11.0",
+    "npm": "11.6.2"
+  }
 }

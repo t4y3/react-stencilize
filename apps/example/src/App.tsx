@@ -1,22 +1,22 @@
-import { Suspense } from 'react';
-import { User as UserComponent, type UserData } from '../components/user';
-import { User } from '../components/user/client.tsx';
-import withSkeleton from '../components/user/withSkeleton';
+import { Suspense } from 'react'
+import { withStencil } from 'react-stencilize'
+import { User as UserComponent, type UserData } from '../components/user'
+import { User } from '../components/user/client.tsx'
 
-const SkeletonUser = withSkeleton(UserComponent);
+const SkeletonUser2 = withStencil(UserComponent)
 
 const fetchUser = async (delay: number): Promise<UserData> => {
-  await new Promise((resolve) => setTimeout(resolve, delay));
+  await new Promise((resolve) => setTimeout(resolve, delay))
   return {
-      image: 'https://picsum.photos/id/318/400/400',
-      name: 'John Doe',
-      description: 'Software Engineer at Example Corp'
-  };
-};
+    image: 'https://picsum.photos/id/318/400/400',
+    name: 'John Doe',
+    description: 'Software Engineer at Example Corp',
+  }
+}
 
 function App() {
-  const userPromise1 = fetchUser(2000);
-  const userPromise2 = fetchUser(3000);
+  const userPromise1 = fetchUser(2000)
+  const userPromise2 = fetchUser(3000)
 
   return (
     <div className="p-8 space-y-8">
@@ -25,7 +25,7 @@ function App() {
       {/* Example 1: Basic skeleton usage */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Example 1: Basic Skeleton</h2>
-        <Suspense fallback={<SkeletonUser />}>
+        <Suspense fallback={<SkeletonUser2 />}>
           <User userPromise={userPromise1} />
         </Suspense>
       </div>
