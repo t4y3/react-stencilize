@@ -4,7 +4,7 @@ export type UserData = {
   description: string
 }
 
-export const User = ({ user }: { user: UserData }) => {
+export const UserView = ({ user }: { user: UserData }) => {
   return (
     <div className="flex">
       <div className="mr-4 shrink-0">
