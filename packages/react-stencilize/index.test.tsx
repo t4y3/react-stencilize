@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {type CSSProperties} from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { withStencil } from './index.js';
@@ -47,6 +47,7 @@ describe('withStencil', () => {
       const city = props.user.address.city().toString();
       return [
         <div key="city">{city}</div>,
+        // @ts-ignore
         <span key="street">{props.user.address.city().street}</span>,
       ];
     }
@@ -123,7 +124,7 @@ describe('withStencil', () => {
             padding: { left: 1 } as unknown as string,
             width: 50,
             '--flag': 'on',
-          }}
+          } as CSSProperties}
         />
       );
     }
