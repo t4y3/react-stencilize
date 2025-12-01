@@ -1,28 +1,60 @@
-import {Suspense} from 'react'
-import {withStencil} from 'react-stencilize'
-import {User, UserView, type UserData} from '../components/user'
-import {Code} from "../components/Code";
-import { codeToHtml } from "shiki";
+import {SandpackProvider, SandpackLayout, SandpackCodeEditor, SandpackPreview} from '@codesandbox/sandpack-react'
 
+const sandpackFiles = {
+  '/App.tsx': `import { Suspense } from "react";
+import { withStencil } from "react-stencilize";
+import { User } from "./User";
+import { UserView, type UserData } from "./User/View";
 
-const SkeletonUser = withStencil(UserView)
+const SkeletonUser = withStencil(UserView);
 
 const fetchUser = async (delay: number): Promise<UserData> => {
-  await new Promise((resolve) => setTimeout(resolve, delay))
+  await new Promise((resolve) => setTimeout(resolve, delay));
   return {
-    image: 'https://picsum.photos/id/318/400/400',
-    name: 'John Doe',
-    description: 'Software Engineer at Example Corp',
-  }
-}
+    name: "John Doe",
+    description: "Software Engineer at Example Corp",
+  };
+};
 
-function App() {
-  const userPromise1 = fetchUser(2000)
-  const codePromise = codeToHtml(`export type UserData = {
-  image: string
-  name: string
-  description: string
+export default function App() {
+  const userPromise = fetchUser(1200);
+
+  return (
+    <div className="p-6 space-y-8">
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">UserView</h1>
+        <Suspense>
+          <UserView user={{ name: "John Doe", description: "Software Engineer at Example Corp", }} />
+        </Suspense>
+      </div>
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">UserView x withStencil</h1>
+        <Suspense>
+          <SkeletonUser />
+        </Suspense>
+      </div>
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">Suspense x use</h1>
+        <Suspense fallback={<SkeletonUser />}>
+          <User userPromise={userPromise} />
+        </Suspense>
+      </div>
+    </div>
+  );
 }
+`,
+  '/User.tsx': `import { use } from "react";
+import { UserView, type UserData } from "./User/View";
+
+export const User = ({ userPromise }: { userPromise: Promise<UserData> }) => {
+  const user = use(userPromise);
+  return <UserView user={user} />;
+};
+`,
+  '/User/View.tsx': `export type UserData = {
+  name: string;
+  description: string;
+};
 
 export const UserView = ({ user }: { user: UserData }) => {
   return (
@@ -40,28 +72,42 @@ export const UserView = ({ user }: { user: UserData }) => {
         </svg>
       </div>
       <div>
-        <h4 className="text-lg font-bold text-gray-900 dark:text-white ss-text-[4]">{user.name}</h4>
-        <p className="mt-1 text-gray-500 dark:text-gray-400 ss-text-[16]">{user.description}</p>
+        <h4 className="text-lg font-semibold text-slate-900">{user.name}</h4>
+        <p className="mt-1 text-slate-600">{user.description}</p>
       </div>
     </div>
-  )
-}`, {
-    lang: 'html',
-    theme: 'light-plus'
-  });
+  );
+};
+`,
+}
+
+function App() {
   return (
     <div className="p-8 space-y-8">
-      <h1 className="text-2xl font-bold">withSkeleton Examples</h1>
-      <Suspense>
-        <Code code={codePromise} />
-      </Suspense>
-      {/* Example 1: Basic skeleton usage */}
       <div>
-        <Suspense fallback={<SkeletonUser/>}>
-          <User userPromise={userPromise1}/>
-        </Suspense>
+        <SandpackProvider
+          template="react-ts"
+          customSetup={{
+            dependencies: {
+              react: '19.2.0',
+              'react-dom': '19.2.0',
+              'react-stencilize': '1.0.1',
+            },
+          }}
+          files={sandpackFiles}
+          options={{
+            classes: {
+              "sp-layout-height": "h-96",
+            },
+            externalResources: ['https://cdn.tailwindcss.com'],
+          }}
+        >
+          <SandpackLayout className="[--sp-layout-height:800px]">
+            <SandpackCodeEditor />
+            <SandpackPreview />
+          </SandpackLayout>
+        </SandpackProvider>
       </div>
-
     </div>
   )
 }
