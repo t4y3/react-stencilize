@@ -19,6 +19,10 @@ pre-push:
     typecheck-stencilize:
       description: "Type check packages/react-stencilize"
       run: npm run -w react-stencilize typecheck
+    test-stencilize:
+      description: "Run tests for packages/react-stencilize when that workspace changed"
+      files: "^packages/react-stencilize/"
+      run: npm run -w react-stencilize test
     tests-all:
       description: "Run tests in all workspaces if present"
       run: npm -ws --if-present run test

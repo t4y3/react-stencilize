@@ -43,6 +43,7 @@ function createSafeProxy(): unknown {
       if (prop === 'valueOf') return () => '';
       if (prop === Symbol.toPrimitive) return () => '';
       if (prop === 'ref' || prop === 'key') return undefined;
+      if (prop === 'style') return {};
       if (prop === Symbol.iterator) return emptyIterator;
       // Return a function-like proxy so both call and deep access are safe
       return new Proxy(() => {}, fnHandler);
@@ -77,6 +78,15 @@ function sanitizeNode(node: unknown): React.ReactNode {
       for (const key of Object.keys(prevProps)) {
         if (key === 'children') continue;
         const v = prevProps[key];
+        if (key === 'style' && v && typeof v === 'object') {
+          const styleEntries: Array<[string, string | number]> = [];
+          for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+            if (typeof val === 'string' || typeof val === 'number') styleEntries.push([k, val]);
+          }
+          // Preserve safe style values; fall back to empty object if nothing is usable
+          nextProps.style = Object.fromEntries(styleEntries);
+          continue;
+        }
         // Allow only primitive attributes; coerce others to empty string
         nextProps[key] =
           typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? v : '';

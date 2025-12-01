@@ -91,7 +91,7 @@ function App() {
             dependencies: {
               react: '19.2.0',
               'react-dom': '19.2.0',
-              'react-stencilize': '1.0.1',
+              'react-stencilize': '1.0.2',
             },
           }}
           files={sandpackFiles}
