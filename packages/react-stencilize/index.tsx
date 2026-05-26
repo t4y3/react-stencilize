@@ -66,40 +66,31 @@ function sanitizeNode(node: unknown): React.ReactNode {
   if (typeof node === 'string' || typeof node === 'number') return '';
 
   if (React.isValidElement(node)) {
-    const type: unknown = node.type;
-    const isHostLike = typeof type === 'string' || type === React.Fragment;
+    const prevProps = (node.props ?? {}) as Readonly<Record<string, unknown>> & {
+      children?: React.ReactNode;
+    };
+    const nextProps: Record<string, unknown> = {};
 
-    if (isHostLike) {
-      const prevProps = (node.props ?? {}) as Readonly<Record<string, unknown>> & {
-        children?: React.ReactNode;
-      };
-      const nextProps: Record<string, unknown> = {};
-
-      for (const key of Object.keys(prevProps)) {
-        if (key === 'children') continue;
-        const v = prevProps[key];
-        if (key === 'style' && v && typeof v === 'object') {
-          const styleEntries: Array<[string, string | number]> = [];
-          for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
-            if (typeof val === 'string' || typeof val === 'number') styleEntries.push([k, val]);
-          }
-          // Preserve safe style values; fall back to empty object if nothing is usable
-          nextProps.style = Object.fromEntries(styleEntries);
-          continue;
+    for (const key of Object.keys(prevProps)) {
+      if (key === 'children') continue;
+      const v = prevProps[key];
+      if (key === 'style' && v && typeof v === 'object') {
+        const styleEntries: Array<[string, string | number]> = [];
+        for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+          if (typeof val === 'string' || typeof val === 'number') styleEntries.push([k, val]);
         }
-        // Allow only primitive attributes; coerce others to empty string
-        nextProps[key] =
-          typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? v : '';
+        nextProps.style = Object.fromEntries(styleEntries);
+        continue;
       }
-
-      const children = prevProps.children;
-      if (children !== undefined) nextProps.children = sanitizeNode(children);
-
-      return React.cloneElement(node as React.ReactElement<Record<string, unknown>>, nextProps);
+      // Allow only primitive attributes; coerce others to empty string
+      nextProps[key] =
+        typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? v : '';
     }
 
-    // For non-host (user) elements, return as-is; execution is controlled by withStencil
-    return node;
+    const children = prevProps.children;
+    if (children !== undefined) nextProps.children = sanitizeNode(children);
+
+    return React.cloneElement(node as React.ReactElement<Record<string, unknown>>, nextProps);
   }
 
   // Non-renderable outputs (objects/functions/proxies) collapse to empty string

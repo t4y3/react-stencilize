@@ -55,8 +55,12 @@
     "@types/node": "22.10.2",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwind-variants": "^3.2.2",
     "typescript": "5.9.3",
     "vitest": "2.1.3"
   }

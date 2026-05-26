@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "tailwindcss-skeleton-screen";
+
+@theme {
+  --font-sans: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}

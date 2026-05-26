@@ -15,11 +15,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@codesandbox/sandpack-react": "^2.20.0",
     "@tailwindcss/vite": "4.1.17",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-stencilize": "*",
+    "shiki": "^4.0.1",
+    "tailwind-variants": "^0.3.0",
     "tailwindcss-skeleton-screen": "2.0.0"
   },
   "devDependencies": {
