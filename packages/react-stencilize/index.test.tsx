@@ -1,4 +1,4 @@
-import React, {type CSSProperties} from 'react';
+import React, { type CSSProperties } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { withStencil } from './index.js';
@@ -9,7 +9,7 @@ describe('withStencil', () => {
       user: { name: string; title?: string };
     }) {
       return (
-        <section data-raw={{}} onClick={() => {}}>
+        <section data-raw={{}} onMouseDown={() => {}}>
           <h1 key="name">{props.user.name}</h1>
           <p key="title">{props.user.title}</p>
         </section>
@@ -20,7 +20,7 @@ describe('withStencil', () => {
     const html = renderToStaticMarkup(<Skeleton />);
 
     expect(html).toContain('data-raw=""');
-    expect(html).not.toContain('onclick');
+    expect(html).not.toContain('onmousedown');
     expect(html).toContain('<h1></h1>');
     expect(html).toContain('<p></p>');
     expect(html).not.toMatch(/name|title/);
@@ -98,16 +98,15 @@ describe('withStencil', () => {
   });
 
   it('supports forwardRef components', () => {
-    const Forward = React.forwardRef<HTMLDivElement, { label?: string }>(function Forward(
-      props,
-      ref,
-    ) {
-      return (
-        <div ref={ref} data-label={props.label}>
-          <span>{props.label}</span>
-        </div>
-      );
-    });
+    const Forward = React.forwardRef<HTMLDivElement, { label?: string }>(
+      function Forward(props, ref) {
+        return (
+          <div ref={ref} data-label={props.label}>
+            <span>{props.label}</span>
+          </div>
+        );
+      },
+    );
 
     const Skeleton = withStencil(Forward);
     const html = renderToStaticMarkup(<Skeleton />);
@@ -119,12 +118,14 @@ describe('withStencil', () => {
     function Styled() {
       return (
         <div
-          style={{
-            color: 'blue',
-            padding: { left: 1 } as unknown as string,
-            width: 50,
-            '--flag': 'on',
-          } as CSSProperties}
+          style={
+            {
+              color: 'blue',
+              padding: { left: 1 } as unknown as string,
+              width: 50,
+              '--flag': 'on',
+            } as CSSProperties
+          }
         />
       );
     }
@@ -147,11 +148,11 @@ describe('withStencil', () => {
   });
 });
 
+// @ts-ignore
+import { cva } from 'class-variance-authority';
 // ---- 実際の clsx / cva / twMerge / tv パッケージを使用したテスト ----
 // @ts-ignore
 import { clsx } from 'clsx';
-// @ts-ignore
-import { cva } from 'class-variance-authority';
 // @ts-ignore
 import { twMerge } from 'tailwind-merge';
 // @ts-ignore
@@ -182,9 +183,7 @@ describe('withStencil with real clsx', () => {
 
   it('handles clsx with conditional && using proxy value', () => {
     function Component(props: { isActive: boolean }) {
-      return (
-        <div className={clsx('base', props.isActive && 'active')}>hello</div>
-      );
+      return <div className={clsx('base', props.isActive && 'active')}>hello</div>;
     }
 
     const Skeleton = withStencil(Component);
@@ -196,9 +195,7 @@ describe('withStencil with real clsx', () => {
   it('handles clsx with object syntax and proxy value', () => {
     function Component(props: { variant: string }) {
       return (
-        <div className={clsx({ primary: props.variant === 'primary', base: true })}>
-          hello
-        </div>
+        <div className={clsx({ primary: props.variant === 'primary', base: true })}>hello</div>
       );
     }
 
@@ -219,9 +216,7 @@ describe('withStencil with real clsx', () => {
 
   it('handles clsx with template literal containing proxy', () => {
     function Component(props: { size: string }) {
-      return (
-        <div className={clsx(`text-${props.size}`, 'font-bold')}>hello</div>
-      );
+      return <div className={clsx(`text-${props.size}`, 'font-bold')}>hello</div>;
     }
 
     const Skeleton = withStencil(Component);
@@ -232,9 +227,7 @@ describe('withStencil with real clsx', () => {
 
   it('handles clsx with array syntax containing proxy', () => {
     function Component(props: { extra?: string }) {
-      return (
-        <div className={clsx(['base', props.extra])}>hello</div>
-      );
+      return <div className={clsx(['base', props.extra])}>hello</div>;
     }
 
     const Skeleton = withStencil(Component);
@@ -266,7 +259,11 @@ describe('withStencil with real cva', () => {
     });
 
     function Button() {
-      return <button className={buttonVariants({ variant: 'primary' })}>click</button>;
+      return (
+        <button type="button" className={buttonVariants({ variant: 'primary' })}>
+          click
+        </button>
+      );
     }
 
     const Skeleton = withStencil(Button);
@@ -287,7 +284,7 @@ describe('withStencil with real cva', () => {
 
     function Button(props: { variant: 'primary' | 'secondary' }) {
       return (
-        <button className={buttonVariants({ variant: props.variant })}>
+        <button type="button" className={buttonVariants({ variant: props.variant })}>
           click
         </button>
       );
@@ -309,7 +306,10 @@ describe('withStencil with real cva', () => {
 
     function Button(props: { size: 'sm' | 'lg'; className?: string }) {
       return (
-        <button className={clsx(buttonVariants({ size: props.size }), props.className)}>
+        <button
+          type="button"
+          className={clsx(buttonVariants({ size: props.size }), props.className)}
+        >
           click
         </button>
       );
@@ -330,7 +330,9 @@ describe('withStencil with real cva', () => {
     });
 
     function Card(props: { color: 'red' | 'blue' }) {
-      return <div className={cardVariants(props as any)}>content</div>;
+      return (
+        <div className={cardVariants(props as unknown as Record<string, unknown>)}>content</div>
+      );
     }
 
     const Skeleton = withStencil(Card);
@@ -375,13 +377,11 @@ describe('withStencil with real cva', () => {
           lg: 'size-lg',
         },
       },
-      compoundVariants: [
-        { intent: 'primary', size: 'lg', class: 'compound-primary-lg' },
-      ],
+      compoundVariants: [{ intent: 'primary', size: 'lg', class: 'compound-primary-lg' }],
     });
 
     function Component(props: { intent: 'primary' | 'danger'; size: 'sm' | 'lg' }) {
-      return <div className={variants(props as any)}>hello</div>;
+      return <div className={variants(props as unknown as Record<string, unknown>)}>hello</div>;
     }
 
     const Skeleton = withStencil(Component);
@@ -410,9 +410,7 @@ describe('withStencil with className utility edge cases', () => {
 
   it('handles proxy value in ternary for className', () => {
     function Component(props: { isLarge: boolean }) {
-      return (
-        <div className={props.isLarge ? 'text-lg' : 'text-sm'}>hello</div>
-      );
+      return <div className={props.isLarge ? 'text-lg' : 'text-sm'}>hello</div>;
     }
 
     const Skeleton = withStencil(Component);
@@ -514,7 +512,7 @@ describe('withStencil with twMerge (tailwind-merge)', () => {
   });
 
   it('handles cn pattern (clsx + twMerge) with proxy className', () => {
-    function cn(...inputs: any[]) {
+    function cn(...inputs: unknown[]) {
       return twMerge(clsx(inputs));
     }
 
@@ -538,7 +536,7 @@ describe('withStencil with twMerge (tailwind-merge)', () => {
   });
 
   it('handles cn pattern with cva and proxy', () => {
-    function cn(...inputs: any[]) {
+    function cn(...inputs: unknown[]) {
       return twMerge(clsx(inputs));
     }
 
@@ -553,7 +551,10 @@ describe('withStencil with twMerge (tailwind-merge)', () => {
 
     function Button(props: { variant: 'primary' | 'secondary'; className?: string }) {
       return (
-        <button className={cn(buttonVariants({ variant: props.variant }), props.className)}>
+        <button
+          type="button"
+          className={cn(buttonVariants({ variant: props.variant }), props.className)}
+        >
           click
         </button>
       );
@@ -581,7 +582,11 @@ describe('withStencil with tailwind-variants (tv)', () => {
     });
 
     function Button() {
-      return <button className={button({ color: 'primary', size: 'sm' })}>click</button>;
+      return (
+        <button type="button" className={button({ color: 'primary', size: 'sm' })}>
+          click
+        </button>
+      );
     }
 
     const Skeleton = withStencil(Button);
@@ -604,7 +609,11 @@ describe('withStencil with tailwind-variants (tv)', () => {
     });
 
     function Button(props: { color: 'primary' | 'secondary'; size: 'sm' | 'lg' }) {
-      return <button className={button({ color: props.color, size: props.size })}>click</button>;
+      return (
+        <button type="button" className={button({ color: props.color, size: props.size })}>
+          click
+        </button>
+      );
     }
 
     const Skeleton = withStencil(Button);
@@ -623,7 +632,7 @@ describe('withStencil with tailwind-variants (tv)', () => {
     });
 
     function Card(props: { shadow: 'sm' | 'lg' }) {
-      return <div className={card(props as any)}>content</div>;
+      return <div className={card(props as unknown as Record<string, unknown>)}>content</div>;
     }
 
     const Skeleton = withStencil(Card);
