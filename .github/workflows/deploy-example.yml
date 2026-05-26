@@ -23,6 +23,7 @@ jobs:
 
       # ビルド
       - run: npm ci
+      - run: npm run build -w react-stencilize
       - run: npm run build -w apps/example
 
       # GitHub Pages 用アーティファクトのアップロード
